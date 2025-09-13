@@ -3,18 +3,29 @@ import HomePage from "@/pages/HomePage";
 import ProductsPage from "@/pages/ProductsPage";
 import AboutPage from "@/pages/AboutPage";
 import ContactPage from "@/pages/ContactPage";
-import { Route, Routes } from "react-router";
+import { Route, Routes, useLocation } from "react-router";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/products" element={<ProductsPage />} />
-      <Route path="/about" element={<AboutPage />} />
-      <Route path="/contact" element={<ContactPage />} />
+  const location = useLocation();
 
-      <Route path="*" element={<div>404 Not Found</div>} />
-    </Routes>
+  return (
+    <>
+      {!location.pathname.startsWith("/admin") ? <Header /> : null}
+      <Routes>
+        {/* Public Route */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/products" element={<ProductsPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+
+        <Route path="/admin">{/* Admin Route */}</Route>
+
+        <Route path="*" element={<div>404 Not Found</div>} />
+      </Routes>
+      {!location.pathname.startsWith("/admin") ? <Footer /> : null}
+    </>
   );
 }
 
