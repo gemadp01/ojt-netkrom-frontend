@@ -1,4 +1,4 @@
-import Layout from "@/components/Layout";
+import Layout from "@/components/common/Layout";
 import CallToActionSection from "@/components/Sections/HomePage/CallToActionSection";
 import ContactSection from "@/components/Sections/HomePage/ContactSection";
 import FeaturedProductsSection from "@/components/Sections/HomePage/FeaturedProductsSection";
