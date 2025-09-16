@@ -2,7 +2,7 @@ import { cva } from "class-variance-authority";
 import clsx from "clsx";
 
 const buttonVariants = cva(
-  "rounded-lg font-semibold transition-all transform hover:scale-105 focus:outline-none",
+  "rounded-lg font-semibold transition-all transform hover:scale-105 focus:outline-none cursor-pointer",
   {
     variants: {
       variant: {
@@ -33,11 +33,20 @@ const buttonVariants = cva(
   }
 );
 
-export function Button({ variant, size, width, className, ...props }) {
+export function Button({
+  variant,
+  size,
+  width,
+  className,
+  children,
+  ...props
+}) {
   return (
     <button
       className={clsx(buttonVariants({ variant, size, width }), className)}
       {...props}
-    />
+    >
+      {children}
+    </button>
   );
 }

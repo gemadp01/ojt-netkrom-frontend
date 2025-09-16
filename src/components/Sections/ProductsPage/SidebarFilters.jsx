@@ -1,17 +1,42 @@
-import React from "react";
+import { Button } from "@/components/common/Button";
+import { Filter, Search } from "lucide-react";
+import { useState } from "react";
 
-const SidebarFilters = () => {
+// List of categories (data from API)
+const categories = [
+  "All",
+  "Electronics",
+  "Fashion",
+  "Home & Living",
+  "Sports",
+  "Books",
+  "Beauty",
+];
+
+const SidebarFilters = ({
+  searchTerm,
+  setSearchTerm,
+  selectedCategory,
+  setSelectedCategory,
+  formatPrice,
+  priceRange,
+  setPriceRange,
+}) => {
+  const [showFilters, setShowFilters] = useState(false);
+
   return (
     <div className="lg:w-1/4">
       <div className="bg-white rounded-lg shadow-lg p-6 sticky top-24">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
-          <button
+          <h3 className="text-lg font-semibold text-heading">Filters</h3>
+          {/* button to show/hide filters on small screens */}
+          <Button
+            variant="ghost"
             onClick={() => setShowFilters(!showFilters)}
-            className="lg:hidden text-gray-500"
+            className="lg:hidden text-text-secondary"
           >
             <Filter className="h-5 w-5" />
-          </button>
+          </Button>
         </div>
 
         <div
@@ -19,24 +44,24 @@ const SidebarFilters = () => {
         >
           {/* Search */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-text-secondary mb-2">
               Search
             </label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-subtle-text h-5 w-5" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search products..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full pl-10 pr-4 py-2 border border-surface rounded-lg"
               />
             </div>
           </div>
 
           {/* Categories */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-text-secondary mb-2">
               Category
             </label>
             <div className="space-y-2">
@@ -50,7 +75,7 @@ const SidebarFilters = () => {
                     onChange={(e) => setSelectedCategory(e.target.value)}
                     className="text-indigo-600 focus:ring-indigo-500"
                   />
-                  <span className="ml-2 text-sm text-gray-600">{category}</span>
+                  <span className="ml-2 text-sm text-text">{category}</span>
                 </label>
               ))}
             </div>
@@ -58,11 +83,11 @@ const SidebarFilters = () => {
 
           {/* Price Range */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-text-secondary mb-2">
               Price Range
             </label>
             <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm text-gray-600">
+              <div className="flex items-center justify-between text-sm text-text-secondary">
                 <span>{formatPrice(priceRange[0])}</span>
                 <span>{formatPrice(priceRange[1])}</span>
               </div>
@@ -75,7 +100,7 @@ const SidebarFilters = () => {
                 onChange={(e) =>
                   setPriceRange([priceRange[0], parseInt(e.target.value)])
                 }
-                className="w-full accent-indigo-600"
+                className="w-full accent-foreground"
               />
             </div>
           </div>
