@@ -1,38 +1,38 @@
+import { ContactCard } from "@/components/common/Card";
 import { Mail, MapPin, Phone } from "lucide-react";
 
 const ContactSection = () => {
   return (
-    <section id="contact" className="py-20 bg-gray-50">
+    <section id="contact" className="py-20 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Get in Touch
-          </h2>
-          <p className="text-xl text-gray-600">
+          <h2 className="text-4xl font-bold text-heading mb-4">Get in Touch</h2>
+          <p className="text-xl text-text-secondary">
             We'd love to hear from you. Contact us anytime!
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="bg-white p-8 rounded-xl shadow-lg text-center">
-            <Phone className="h-12 w-12 text-indigo-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Phone</h3>
-            <p className="text-gray-600">+62 812-3456-7890</p>
-          </div>
+          <ContactCard
+            icon={Phone}
+            iconSize="h-12 w-12"
+            title="Phone"
+            description="+62 812-3456-7890"
+          />
 
-          <div className="bg-white p-8 rounded-xl shadow-lg text-center">
-            <Mail className="h-12 w-12 text-indigo-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Email</h3>
-            <p className="text-gray-600">hello@catalogstore.com</p>
-          </div>
+          <ContactCard
+            icon={Mail}
+            iconSize="h-12 w-12"
+            title="Email"
+            description="gemadp01@gmail.com"
+          />
 
-          <div className="bg-white p-8 rounded-xl shadow-lg text-center">
-            <MapPin className="h-12 w-12 text-indigo-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              Location
-            </h3>
-            <p className="text-gray-600">Jakarta, Indonesia</p>
-          </div>
+          <ContactCard
+            icon={MapPin}
+            iconSize="h-12 w-12"
+            title="Address"
+            description="Bandung, Indonesia"
+          />
         </div>
       </div>
     </section>

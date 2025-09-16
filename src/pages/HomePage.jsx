@@ -1,4 +1,4 @@
-import Layout from "@/components/common/Layout";
+import Layout from "@/components/Layout";
 import CallToActionSection from "@/components/Sections/HomePage/CallToActionSection";
 import ContactSection from "@/components/Sections/HomePage/ContactSection";
 import FeaturedProductsSection from "@/components/Sections/HomePage/FeaturedProductsSection";
@@ -15,7 +15,8 @@ const HomePage = () => {
       <FeaturesSection />
 
       {/* Featured Products */}
-      <FeaturedProductsSection />
+      {/* Featured appears when products are added */}
+      {/* <FeaturedProductsSection /> */}
 
       {/* CTA Section */}
       <CallToActionSection />

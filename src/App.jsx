@@ -4,8 +4,8 @@ import ProductsPage from "@/pages/ProductsPage";
 import AboutPage from "@/pages/AboutPage";
 import ContactPage from "@/pages/ContactPage";
 import { Route, Routes, useLocation } from "react-router";
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 function App() {
   const location = useLocation();

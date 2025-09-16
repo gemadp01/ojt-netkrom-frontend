@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# component test
+src/components/common/Beranda.jsx
+src/components/common/QuizApp.jsx
+

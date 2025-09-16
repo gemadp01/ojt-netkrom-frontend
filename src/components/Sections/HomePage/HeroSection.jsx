@@ -1,3 +1,4 @@
+import { Button } from "@/components/common/Button";
 import { useEffect, useState } from "react";
 
 const HeroSection = () => {
@@ -39,23 +40,19 @@ const HeroSection = () => {
           alt="Hero"
           className="w-full h-full object-cover transition-all duration-1000 ease-in-out"
         />
-        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+        <div className="absolute inset-0 bg-background bg-opacity-40"></div>
       </div>
 
-      <div className="relative z-10 text-center text-white px-4 sm:px-6 lg:px-8">
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
+      <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8">
+        <h1 className="text-5xl text-heading md:text-7xl font-bold mb-6 animate-fade-in">
           {heroSlides[currentSlide].title}
         </h1>
-        <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto opacity-90">
+        <p className="text-xl text-text-secondary md:text-2xl mb-8 max-w-3xl mx-auto opacity-90">
           {heroSlides[currentSlide].subtitle}
         </p>
         <div className="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
-          <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 shadow-lg">
-            Explore Products
-          </button>
-          <button className="border-2 border-white hover:bg-white hover:text-indigo-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105">
-            Learn More
-          </button>
+          <Button>Explore Products</Button>
+          <Button variant="outline">Learn More</Button>
         </div>
       </div>
 
@@ -66,7 +63,7 @@ const HeroSection = () => {
             key={index}
             onClick={() => setCurrentSlide(index)}
             className={`w-3 h-3 rounded-full transition-all cursor-pointer ${
-              currentSlide === index ? "bg-white" : "bg-white opacity-50"
+              currentSlide === index ? "bg-foreground" : "bg-surface"
             }`}
           />
         ))}
