@@ -119,3 +119,15 @@ export const ProductCard = ({ product, viewMode, formatPrice }) => {
     </div>
   );
 };
+
+export const OurValuesCard = ({ icon: Icon, title, description }) => {
+  return (
+    <div className="bg-surface rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
+      <div className="inline-flex items-center justify-center w-16 h-16 bg-border rounded-full mb-6">
+        {Icon && <Icon className="text-3xl text-foreground" />}
+      </div>
+      <h3 className="text-xl font-semibold text-heading mb-3">{title}</h3>
+      <p className="text-text-secondary">{description}</p>
+    </div>
+  );
+};
