@@ -131,3 +131,22 @@ export const OurValuesCard = ({ icon: Icon, title, description }) => {
     </div>
   );
 };
+
+export const ContactInformationCard = ({ icon: Icon, info }) => {
+  return (
+    <div className="bg-background rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
+      <div className="inline-flex items-center justify-center w-16 h-16 bg-border rounded-full mb-6">
+        {Icon && <Icon className="h-8 w-8 text-foreground" />}
+      </div>
+      <h3 className="text-xl font-semibold text-heading mb-3">{info.title}</h3>
+      <div className="space-y-1 mb-3">
+        {info.details.map((detail, idx) => (
+          <p key={idx} className="text-text font-medium">
+            {detail}
+          </p>
+        ))}
+      </div>
+      <p className="text-subtle-text text-sm">{info.description}</p>
+    </div>
+  );
+};

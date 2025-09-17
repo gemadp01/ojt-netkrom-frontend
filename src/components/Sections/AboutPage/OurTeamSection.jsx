@@ -15,7 +15,7 @@ const OurTeamSection = () => {
         <div className="grid grid-cols-1 place-items-center mx-auto gap-8">
           <div className="w-fit bg-background rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
             <img
-              src="/public/img/profile.png"
+              src="/img/profile.png"
               alt="Gema Dodi Pranata"
               className="w-full h-64 object-cover"
             />
