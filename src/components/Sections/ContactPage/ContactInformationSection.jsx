@@ -1,10 +1,11 @@
+import { ContactInformationCard } from "@/components/common/Card";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 
 const contactInfo = [
   {
     icon: Phone,
     title: "Phone",
-    details: ["+62 812-3456-7890", "+62 21-1234-5678"],
+    details: ["+62 812-3456-7890"],
     description: "Mon-Fri 9AM-6PM, Sat 9AM-2PM",
   },
   {
@@ -16,7 +17,7 @@ const contactInfo = [
   {
     icon: MapPin,
     title: "Address",
-    details: ["Jl. Sudirman No. 123", "Jakarta Pusat, DKI Jakarta 10270"],
+    details: ["Bandung, Indonesia"],
     description: "Visit our office Mon-Fri 9AM-5PM",
   },
   {

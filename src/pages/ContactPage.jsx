@@ -1,8 +1,38 @@
 import { useState } from "react";
-import { Phone, Mail, MapPin, Clock, Send, CheckCircle } from "lucide-react";
+import { Send, CheckCircle } from "lucide-react";
 import HeroSection from "@/components/Sections/ContactPage/HeroSection";
-import { ContactInformationCard } from "@/components/common/Card";
 import { Button } from "@/components/common/Button";
+import ContactInformationSection from "@/components/Sections/ContactPage/ContactInformationSection";
+
+// const contactInfo = [
+//   {
+//     icon: Phone,
+//     title: "Phone",
+//     details: ["+62 812-3456-7890", "+62 21-1234-5678"],
+//     description: "Mon-Fri 9AM-6PM, Sat 9AM-2PM",
+//   },
+//   {
+//     icon: Mail,
+//     title: "Email",
+//     details: ["hello@catalogstore.com", "support@catalogstore.com"],
+//     description: "We respond within 24 hours",
+//   },
+//   {
+//     icon: MapPin,
+//     title: "Address",
+//     details: ["Jl. Sudirman No. 123", "Jakarta Pusat, DKI Jakarta 10270"],
+//     description: "Visit our office Mon-Fri 9AM-5PM",
+//   },
+//   {
+//     icon: Clock,
+//     title: "Business Hours",
+//     details: [
+//       "Monday - Friday: 9:00 AM - 6:00 PM",
+//       "Saturday: 9:00 AM - 2:00 PM",
+//     ],
+//     description: "Sunday: Closed",
+//   },
+// ];
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -76,8 +106,8 @@ const ContactPage = () => {
       {/* Hero Section */}
       <HeroSection />
 
-      {/* Contact Information */}
-      <ContactInformationCard />
+      {/* Contact Information Section*/}
+      <ContactInformationSection />
 
       {/* Contact Form & Map */}
       <section className="py-20 bg-background">
