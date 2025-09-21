@@ -2,7 +2,7 @@ import { Send, CheckCircle } from "lucide-react";
 import HeroSection from "@/components/Sections/ContactPage/HeroSection";
 import { Button } from "@/components/common/Button";
 import ContactInformationSection from "@/components/Sections/ContactPage/ContactInformationSection";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useState } from "react";
 
 const ContactPage = () => {
@@ -11,63 +11,78 @@ const ContactPage = () => {
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
-    reset,
-  } = useForm();
-  // const [isSubmitted, setIsSubmitted] = useState(false);
+  } = useForm({
+    mode: "onSubmit",
+    reValidateMode: "onChange",
+  });
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [status, setStatus] = useState("");
 
-  const onSubmit = (data) => {
-    const response = fetch("http://localhost:3000/api/contact", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const error = await response.json();
-          error.errors.forEach((err) => {
-            setError(err.param, {
+  const onSubmit = async (data) => {
+    if (status) {
+      setStatus("");
+    }
+
+    try {
+      const response = await fetch("http://localhost:3000/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        // Kalau backend ngirim { success: false, message: "..." }
+        if (result.success === false) {
+          throw new Error(result.message);
+        }
+
+        // Kalau backend ngirim errors array
+        if (result.errors) {
+          result.errors.forEach((err) => {
+            setError(err.path, {
               type: "server",
               message: err.msg,
             });
           });
         }
-        return response.json();
-      })
-      .then((data) => {
-        setStatus(data.message);
-      })
-      .catch((error) => {
-        setStatus(error.message);
-      });
-    // reset();
+
+        return;
+      }
+
+      setIsSubmitted(true);
+      // reset();
+    } catch (error) {
+      setStatus((error.message = "Something went wrong"));
+    }
   };
 
-  // if (isSubmitted) {
-  //   return (
-  //     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-  //       <div className="bg-white rounded-xl shadow-lg p-8 max-w-md mx-auto text-center">
-  //         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-  //           <CheckCircle className="h-8 w-8 text-green-600" />
-  //         </div>
-  //         <h2 className="text-2xl font-bold text-gray-900 mb-4">
-  //           Message Sent Successfully!
-  //         </h2>
-  //         <p className="text-gray-600 mb-6">
-  //           Thank you for contacting us. We'll get back to you within 24 hours.
-  //         </p>
-  //         <button
-  //           onClick={() => setIsSubmitted(false)}
-  //           className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg transition-colors"
-  //         >
-  //           Send Another Message
-  //         </button>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  if (isSubmitted) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md mx-auto text-center">
+          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="h-8 w-8 text-green-600" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Message Sent Successfully!
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Thank you for contacting us. We'll get back to you within 24 hours.
+          </p>
+          <button
+            onClick={() => setIsSubmitted(false)}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg transition-colors"
+          >
+            Send Another Message
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -99,6 +114,11 @@ const ContactPage = () => {
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg"
                         placeholder="Your full name"
                       />
+                      {errors.name && (
+                        <p className="text-red-500 text-sm mt-2">
+                          {errors.name.message}
+                        </p>
+                      )}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
@@ -112,6 +132,11 @@ const ContactPage = () => {
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg "
                         placeholder="your@email.com"
                       />
+                      {errors.email && (
+                        <p className="text-red-500 text-sm mt-2">
+                          {errors.email.message}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -140,6 +165,11 @@ const ContactPage = () => {
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg "
                         placeholder="+62 "
                       />
+                      {errors.phone && (
+                        <p className="text-red-500 text-sm mt-2">
+                          {errors.phone.message}
+                        </p>
+                      )}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
@@ -174,6 +204,11 @@ const ContactPage = () => {
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg "
                       placeholder="Brief description of your inquiry"
                     />
+                    {errors.subject && (
+                      <p className="text-red-500 text-sm mt-2">
+                        {errors.subject.message}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -189,12 +224,17 @@ const ContactPage = () => {
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg  resize-none"
                       placeholder="Please provide details about your inquiry..."
                     />
+                    {errors.message && (
+                      <p className="text-red-500 text-sm mt-2">
+                        {errors.message.message}
+                      </p>
+                    )}
                   </div>
 
                   <Button
                     width="full"
                     type="submit"
-                    // disabled={isSubmitting}
+                    disabled={isSubmitting}
                     className="flex justify-center items-center"
                   >
                     {isSubmitting ? (
@@ -209,6 +249,9 @@ const ContactPage = () => {
                       </>
                     )}
                   </Button>
+                  {status && (
+                    <p className="text-red-500 text-sm mt-2">{status}</p>
+                  )}
                 </form>
               </div>
             </div>
