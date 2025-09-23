@@ -1,10 +1,15 @@
+import { Button } from "@/components/common/Button";
 import { navLinkClass, navLinkClassMobile } from "@/lib/navLinkClass";
-import { Menu, ShoppingBag, X } from "lucide-react";
+import { ArrowLeft, Menu, ShoppingBag, X } from "lucide-react";
 import { useState } from "react";
-import { NavLink } from "react-router";
+import { Link, NavLink, useLocation } from "react-router";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const location = useLocation();
+  const loginLocation = location.pathname.startsWith("/login");
+  const registerLocation = location.pathname.startsWith("/register");
 
   return (
     <nav className="bg-background shadow-[0px_10px_10px_-10px_rgb(0,0,0,.3)] sticky top-0 z-50">
@@ -17,50 +22,61 @@ const Header = () => {
             </span> */}
           </div>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
-              <NavLink
-                end
-                to="/"
-                className={({ isActive }) => navLinkClass(isActive)}
-              >
-                Home
-              </NavLink>
-              <NavLink
-                to="/products"
-                className={({ isActive }) => navLinkClass(isActive)}
-              >
-                Products
-              </NavLink>
-              <NavLink
-                to="/about"
-                className={({ isActive }) => navLinkClass(isActive)}
-              >
-                About
-              </NavLink>
-              <NavLink
-                to="/contact"
-                className={({ isActive }) => navLinkClass(isActive)}
-              >
-                Contact
-              </NavLink>
-            </div>
-          </div>
+          {!loginLocation && !registerLocation ? (
+            <>
+              {/* Desktop Menu */}
+              <div className="hidden md:block">
+                <div className="ml-10 flex items-baseline space-x-8">
+                  <NavLink
+                    end
+                    to="/"
+                    className={({ isActive }) => navLinkClass(isActive)}
+                  >
+                    Home
+                  </NavLink>
+                  <NavLink
+                    to="/products"
+                    className={({ isActive }) => navLinkClass(isActive)}
+                  >
+                    Products
+                  </NavLink>
+                  <NavLink
+                    to="/about"
+                    className={({ isActive }) => navLinkClass(isActive)}
+                  >
+                    About
+                  </NavLink>
+                  <NavLink
+                    to="/contact"
+                    className={({ isActive }) => navLinkClass(isActive)}
+                  >
+                    Contact
+                  </NavLink>
+                </div>
+              </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-foreground focus:outline-none cursor-pointer"
-            >
-              {isMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
-          </div>
+              {/* Mobile menu button */}
+              <div className="md:hidden">
+                <button
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  className="text-foreground focus:outline-none cursor-pointer"
+                >
+                  {isMenuOpen ? (
+                    <X className="h-6 w-6" />
+                  ) : (
+                    <Menu className="h-6 w-6" />
+                  )}
+                </button>
+              </div>
+            </>
+          ) : (
+            <Link to="/">
+              <Button variant="ghost" size="sm" className="flex items-center ">
+                <ArrowLeft className="h-5 w-5 mr-2" />
+                Back to Store
+              </Button>
+            </Link>
+          )}
         </div>
 
         {/* Mobile Menu */}
