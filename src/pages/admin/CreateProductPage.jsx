@@ -3,7 +3,7 @@ import { Button } from "@/components/common/Button";
 import { AlertCircle, ArrowLeft, Save, Upload, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, Navigate } from "react-router";
+import { Link } from "react-router";
 
 const CreateProductPage = () => {
   const [preview, setPreview] = useState("");
@@ -14,7 +14,6 @@ const CreateProductPage = () => {
     setValue,
     setError,
     formState: { errors, isSubmitting },
-    watch,
     reset,
   } = useForm({
     mode: "onChange",
