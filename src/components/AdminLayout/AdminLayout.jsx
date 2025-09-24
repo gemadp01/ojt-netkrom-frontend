@@ -4,9 +4,11 @@ import { AdminPage } from "@/components/guard/AdminPage";
 import SidebarItem from "@/components/AdminLayout/Sidebar/SidebarItem";
 import SidebarHeader from "@/components/AdminLayout/Sidebar/SidebarHeader";
 import { Button } from "@/components/common/Button";
+import { useNavigate } from "react-router";
 
 const AdminLayout = ({ title, rightSection, children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleSidebarOpen = useCallback((tab) => {
     setSidebarOpen(tab);
@@ -17,6 +19,16 @@ const AdminLayout = ({ title, rightSection, children }) => {
     email: "sarah@catalogstore.com",
     avatar:
       "https://images.unsplash.com/photo-1494790108755-2616c66e1de0?w=40&h=40&fit=crop",
+  };
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+
+    await fetch("/api/auth/logout", { method: "POST" });
+
+    localStorage.removeItem("token");
+
+    navigate("/login");
   };
 
   return (
@@ -49,9 +61,11 @@ const AdminLayout = ({ title, rightSection, children }) => {
                 </p>
                 <p className="text-sm text-gray-500">{adminUser.email}</p>
               </div>
-              <button className="text-gray-400 hover:text-gray-600">
-                <LogOut className="h-5 w-5 ml-3" />
-              </button>
+              <form onSubmit={handleLogout}>
+                <Button type="submit" variant="icon" size="sm">
+                  <LogOut className="h-5 w-5" />
+                </Button>
+              </form>
             </div>
           </div>
         </div>
