@@ -1,72 +1,121 @@
 import AdminLayout from "@/components/AdminLayout/AdminLayout";
 import { Button } from "@/components/common/Button";
-import { ArrowLeft, Plus, Save, Upload, X } from "lucide-react";
-import { useState } from "react";
-import { Link } from "react-router";
+import { AlertCircle, ArrowLeft, Save, Upload, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { Link, Navigate } from "react-router";
 
 const CreateProductPage = () => {
-  const [currentView, setCurrentView] = useState("add");
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    category: "",
-    price: "",
-    comparePrice: "",
-    sku: "",
-    stock: "",
-    weight: "",
-    dimensions: { length: "", width: "", height: "" },
-    tags: [],
-    status: "active",
-    images: [],
-    seoTitle: "",
-    seoDescription: "",
-    metaKeywords: "",
+  const [preview, setPreview] = useState("");
+  const [status, setStatus] = useState();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    setError,
+    formState: { errors, isSubmitting },
+    watch,
+    reset,
+  } = useForm({
+    mode: "onChange",
+    reValidateMode: "onChange",
   });
 
-  const [newTag, setNewTag] = useState("");
-  // const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const CATEGORY_LABELS = {
+    ELECTRONICS: "Electronics",
+    CLOTHING_FASHION: "Clothing & Fashion",
+    HOME_GARDEN: "Home & Garden",
+    SPORTS_OUTDOORS: "Sports & Outdoors",
+    BOOKS_MEDIA: "Books & Media",
+    TOYS_GAMES: "Toys & Games",
+    HEALTH_BEAUTY: "Health & Beauty",
+    AUTOMOTIVE: "Automotive",
+  };
 
-  const categories = [
-    "Electronics",
-    "Clothing & Fashion",
-    "Home & Garden",
-    "Sports & Outdoors",
-    "Books & Media",
-    "Toys & Games",
-    "Health & Beauty",
-    "Automotive",
-  ];
+  const onSubmit = async (data) => {
+    const token = localStorage.getItem("token");
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    if (name.includes("dimensions.")) {
-      const dimension = name.split(".")[1];
-      setFormData((prev) => ({
-        ...prev,
-        dimensions: { ...prev.dimensions, [dimension]: value },
-      }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+    const formData = new FormData();
+
+    formData.append("name", data.name);
+    formData.append("description", data.description);
+    formData.append("category", data.category);
+    formData.append("status", data.status);
+    formData.append("price", data.price);
+    formData.append("sku", data.sku);
+    formData.append("stock", data.stock);
+    if (data.weight !== "") formData.append("weight", data.weight);
+    formData.append("image", data.image[0]);
+
+    try {
+      const response = await fetch("http://localhost:3000/api/products", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        // Kalau backend ngirim { success: false, message: "..." }
+        if (result.success === false) {
+          throw new Error(result.message);
+        }
+
+        // Kalau backend ngirim errors array
+        if (result.errors) {
+          result.errors.forEach((err) => {
+            setError(err.path, {
+              type: "server",
+              message: err.msg,
+            });
+          });
+        }
+
+        return;
+      }
+      setStatus(result);
+      reset();
+      setPreview(""); // reset image preview
+      setValue("image", null); // reset field image RHF
+    } catch (error) {
+      setStatus({
+        success: false,
+        message: (error.message = "Something went wrong"),
+      });
     }
   };
 
   const handleImageUpload = (e) => {
-    const files = Array.from(e.target.files);
+    const file = e.target.files[0];
+    const allowedTypes = ["image/jpeg", "image/png"];
+    if (file.size >= 2000000 || !allowedTypes.includes(file.type)) {
+      setPreview("");
+      return;
+    }
+
     // In real app, you would upload to server and get URLs
-    const newImages = files.map((file) => URL.createObjectURL(file));
-    setFormData((prev) => ({
-      ...prev,
-      images: [...prev.images, ...newImages],
-    }));
+    const newImage = URL.createObjectURL(file);
+
+    setPreview(newImage);
   };
 
-  const handleRemoveImage = (index) => {
-    setFormData((prev) => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index),
-    }));
+  const handleRemoveImage = () => {
+    setValue("image", null);
+    setPreview("");
   };
+
+  useEffect(() => {
+    if (status) {
+      const timer = setTimeout(() => {
+        setStatus(undefined);
+      }, 3000);
+
+      return () => clearTimeout(timer); // cleanup biar nggak leak
+    }
+  }, [status]);
 
   return (
     <AdminLayout title="Create Product">
@@ -85,7 +134,25 @@ const CreateProductPage = () => {
         </div>
       </div>
 
-      <form className="space-y-8">
+      {status?.success === true && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center">
+          <Save className="h-5 w-5 text-green-500 mr-3" />
+          <span className="text-green-700">{status?.message}</span>
+        </div>
+      )}
+
+      {status?.success === false && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center">
+          <AlertCircle className="h-5 w-5 text-red-500 mr-3" />
+          <span className="text-red-700">{status?.message}</span>
+        </div>
+      )}
+
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-8"
+        encType="multipart/form-data"
+      >
         {/* Basic Information */}
         <div className="bg-white rounded-xl shadow-sm p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
@@ -97,14 +164,22 @@ const CreateProductPage = () => {
                 Product Name *
               </label>
               <input
+                {...register("name", {
+                  required: "Product name is required",
+                  maxLength: {
+                    value: 100,
+                    message: "Product name must be less than 100 characters",
+                  },
+                })}
                 type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="Enter product name"
-                required
               />
+              {errors.name && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.name.message}
+                </p>
+              )}
             </div>
 
             <div className="md:col-span-2">
@@ -112,14 +187,23 @@ const CreateProductPage = () => {
                 Description *
               </label>
               <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
+                {...register("description", {
+                  required: "Product description is required",
+                  maxLength: {
+                    value: 1000,
+                    message:
+                      "Product description must be less than 1000 characters",
+                  },
+                })}
                 rows={4}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="Enter product description"
-                required
               />
+              {errors.description && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.description.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -127,19 +211,21 @@ const CreateProductPage = () => {
                 Category *
               </label>
               <select
-                name="category"
-                value={formData.category}
-                onChange={handleInputChange}
+                {...register("category", { required: "Category is required" })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                required
               >
                 <option value="">Select category</option>
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
+                {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
+                  <option key={key} value={key}>
+                    {label}
                   </option>
                 ))}
               </select>
+              {errors.category && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.category.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -147,15 +233,17 @@ const CreateProductPage = () => {
                 Status
               </label>
               <select
-                name="status"
-                value={formData.status}
-                onChange={handleInputChange}
+                {...register("status", { required: "Status is required" })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
-                <option value="draft">Draft</option>
               </select>
+              {errors.status && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.status.message}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -174,14 +262,23 @@ const CreateProductPage = () => {
                 <span className="absolute left-3 top-2 text-gray-500">Rp</span>
                 <input
                   type="number"
-                  name="price"
-                  value={formData.price}
-                  onChange={handleInputChange}
+                  {...register("price", {
+                    required: "Price is required",
+                    min: {
+                      value: 1,
+                      message: "Price must be greater than 1",
+                    },
+                  })}
+                  min={0}
                   className="w-full pl-12 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="0"
-                  required
                 />
               </div>
+              {errors.price && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.price.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -190,28 +287,45 @@ const CreateProductPage = () => {
               </label>
               <input
                 type="text"
-                name="sku"
-                value={formData.sku}
-                onChange={handleInputChange}
+                {...register("sku", {
+                  required: "SKU is required",
+                  maxLength: {
+                    value: 20,
+                    message: "SKU must be less than 20 characters",
+                  },
+                })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Enter SKU"
-                required
+                placeholder="Enter SKU (Stock Keeping Unit / Kode Unik)"
               />
+              {errors.sku && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.sku.message}
+                </p>
+              )}
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Stock Quantity *
+                Stock *
               </label>
               <input
                 type="number"
-                name="stock"
-                value={formData.stock}
-                onChange={handleInputChange}
+                {...register("stock", {
+                  required: "Stock is required",
+                  minLength: {
+                    value: 1,
+                    message: "Stock must be greater than 1",
+                  },
+                })}
+                min={0}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="0"
-                required
               />
+              {errors.stock && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.stock.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -220,13 +334,17 @@ const CreateProductPage = () => {
               </label>
               <input
                 type="number"
+                min={0}
+                {...register("weight")}
                 step="0.1"
-                name="weight"
-                value={formData.weight}
-                onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="0.0"
               />
+              {errors.weight && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.weight.message}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -245,44 +363,69 @@ const CreateProductPage = () => {
               </div>
               <input
                 type="file"
+                {...register("image", {
+                  required: "Image is required",
+                  validate: {
+                    lessThan2MB: (files) =>
+                      files[0]?.size < 2000000 || "Max file size is 2MB",
+                    acceptedFormats: (files) =>
+                      ["image/jpeg", "image/png"].includes(files[0]?.type) ||
+                      "Only JPG/PNG files are allowed",
+                  },
+                })}
                 className="hidden"
-                multiple
                 accept="image/*"
-                onChange={handleImageUpload}
+                onChange={(e) => {
+                  handleImageUpload(e); // preview
+                  register("image").onChange(e); // sync dengan RHF
+                }}
               />
             </label>
+            {errors.image && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.image.message}
+              </p>
+            )}
           </div>
 
-          {formData.images.length > 0 && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {formData.images.map((image, index) => (
-                <div key={index} className="relative group">
-                  <img
-                    src={image}
-                    alt={`Product ${index + 1}`}
-                    className="w-full h-24 object-cover rounded-lg"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveImage(index)}
-                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                </div>
-              ))}
+          {preview && (
+            <div className="relative">
+              <img
+                src={preview}
+                alt={`Product `}
+                className="w-24 h-24 object-cover rounded-lg"
+              />
+              <button
+                type="button"
+                onClick={handleRemoveImage}
+                className="absolute -top-2 left-20 bg-red-500 text-white rounded-full p-1"
+              >
+                <X className="h-4 w-4" />
+              </button>
             </div>
           )}
         </div>
 
         {/* Form Actions */}
         <div className="border-box flex flex-col space-y-1 m-2 lg:flex-row lg:items-center lg:justify-end lg:space-x-4">
-          <Button type="button" variant="outline">
-            Cancel
-          </Button>
+          <Link to="/admin/products">
+            <Button type="button" variant="outline">
+              Cancel
+            </Button>
+          </Link>
+
           <Button type="submit" variant="primary">
-            <Save className="h-4 w-4 mr-2" />
-            Save Product
+            {isSubmitting ? (
+              <div className="flex items-center">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-border mr-2"></div>
+                Creating...
+              </div>
+            ) : (
+              <>
+                <Save className="h-4 w-4 mr-2" />
+                Create Product
+              </>
+            )}
           </Button>
         </div>
       </form>
