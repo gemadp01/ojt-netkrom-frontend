@@ -20,101 +20,118 @@ const ProductsPage = () => {
       id: 1,
       name: "Premium Wireless Headphones",
       price: 1299000,
-      rating: 2.8,
-      reviews: 124,
+      // rating: 2.8,
+      // reviews: 124,
       image:
         "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
       category: "Electronics",
       description: "High-quality wireless headphones with noise cancellation",
-      inStock: true,
+      status: "active",
     },
     {
       id: 2,
       name: "Smart Fitness Watch",
       price: 2499000,
-      rating: 4.9,
-      reviews: 89,
+      // rating: 4.9,
+      // reviews: 89,
       image:
         "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop",
       category: "Electronics",
       description: "Advanced fitness tracking with heart rate monitor",
-      inStock: true,
+      status: "active",
     },
     {
       id: 3,
       name: "Designer Leather Handbag",
       price: 899000,
-      rating: 4.7,
-      reviews: 67,
+      // rating: 4.7,
+      // reviews: 67,
       image:
         "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop",
       category: "Fashion",
       description: "Elegant leather handbag for modern women",
-      inStock: true,
+      status: "active",
     },
     {
       id: 4,
       name: "Professional Running Shoes",
       price: 1599000,
-      rating: 4.6,
-      reviews: 156,
+      // rating: 4.6,
+      // reviews: 156,
       image:
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop",
       category: "Fashion",
       description: "Comfortable running shoes for professional athletes",
-      inStock: false,
+      status: "inactive",
     },
     {
       id: 5,
       name: "Modern Coffee Maker",
       price: 2199000,
-      rating: 4.5,
-      reviews: 78,
+      // rating: 4.5,
+      // reviews: 78,
       image:
         "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=400&fit=crop",
       category: "Home & Living",
       description: "Automatic coffee maker with programmable settings",
-      inStock: true,
+      status: "active",
     },
     {
       id: 6,
       name: "Yoga Mat Premium",
       price: 299000,
-      rating: 4.4,
-      reviews: 203,
+      // rating: 4.4,
+      // reviews: 203,
       image:
         "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=400&fit=crop",
       category: "Sports",
       description: "Non-slip yoga mat with extra thickness",
-      inStock: true,
+      status: "active",
     },
     {
       id: 7,
       name: "Bluetooth Speaker",
       price: 699000,
-      rating: 4.3,
-      reviews: 91,
+      // rating: 4.3,
+      // reviews: 91,
       image:
         "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=400&fit=crop",
       category: "Electronics",
       description: "Portable bluetooth speaker with rich bass",
-      inStock: true,
+      status: "active",
     },
     {
       id: 8,
       name: "Minimalist Desk Lamp",
       price: 459000,
-      rating: 4.2,
-      reviews: 45,
+      // rating: 4.2,
+      // reviews: 45,
       image:
         "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop",
       category: "Home & Living",
       description: "Adjustable LED desk lamp with touch control",
-      inStock: true,
+      status: "active",
     },
   ];
 
+  // const fetchProducts = async () => {
+  //   try {
+  //     const response = await fetch("http://localhost:3000/api/products", {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+  //     const data = await response.json();
+
+  //     return data;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
   useEffect(() => {
+    // fetchProducts();
     let filtered = allProducts;
 
     // Filter by category

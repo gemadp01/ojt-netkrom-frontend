@@ -78,7 +78,7 @@ export const ProductCard = ({ product, viewMode, formatPrice }) => {
           {product.description}
         </p>
 
-        <div className="flex items-center mb-3">
+        {/* <div className="flex items-center mb-3">
           <div className="flex items-center">
             {[...Array(5)].map((_, i) => (
               <Star
@@ -94,7 +94,7 @@ export const ProductCard = ({ product, viewMode, formatPrice }) => {
           <span className="ml-2 text-sm text-text-secondary">
             ({product.rating}) • {product.reviews} reviews
           </span>
-        </div>
+        </div> */}
 
         <div
           className={`flex flex-col items-start ${
