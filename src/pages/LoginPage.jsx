@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/common/Button";
 import { Link, useNavigate } from "react-router";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 const LoginPage = () => {
   const {

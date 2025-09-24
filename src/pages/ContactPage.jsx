@@ -36,6 +36,7 @@ const ContactPage = () => {
 
       if (!response.ok) {
         // Kalau backend ngirim { success: false, message: "..." }
+        // maka otomatis error code 500, error code dibawah itu dijadikan error server
         if (result.success === false) {
           throw new Error(result.message);
         }

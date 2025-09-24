@@ -1,10 +1,34 @@
 import AdminLayout from "@/components/AdminLayout/AdminLayout";
 import { Button } from "@/components/common/Button";
 import { Edit, Eye, Plus, Trash2 } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router";
 
 const ProductManagementPage = () => {
+  const [products, setProducts] = React.useState([]);
+
+  const fetchProducts = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch("http://localhost:3000/api/products/me", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      console.log(data);
+      setProducts(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
   return (
     <AdminLayout
       title="Product Management"
@@ -56,7 +80,7 @@ const ProductManagementPage = () => {
                   alt="Product"
                 />
                 <div className="ml-4">
-                  <div className="text-sm font-medium text-gray-900 text-wrap">
+                  <div className="text-sm font-medium text-gray-900 line-clamp-2 text-wrap">
                     Premium Headphones
                   </div>
                   <div className="text-sm text-gray-500">SKU: ATP-WH-001</div>
