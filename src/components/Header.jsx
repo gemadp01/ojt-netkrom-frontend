@@ -52,21 +52,22 @@ const Header = () => {
                   >
                     Contact
                   </NavLink>
-                </div>
-              </div>
 
-              {/* Mobile menu button */}
-              <div className="md:hidden">
-                <button
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  className="text-foreground focus:outline-none cursor-pointer"
-                >
-                  {isMenuOpen ? (
-                    <X className="h-6 w-6" />
-                  ) : (
-                    <Menu className="h-6 w-6" />
-                  )}
-                </button>
+                  <div className="w-px h-6 bg-border my-auto"></div>
+
+                  <div className="flex items-center space-x-4 ">
+                    <Link to="/login">
+                      <Button variant="primary" size="sm">
+                        Login
+                      </Button>
+                    </Link>
+                    <Link to="/register">
+                      <Button variant="outline" size="sm">
+                        Register
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
               </div>
             </>
           ) : (
@@ -77,6 +78,19 @@ const Header = () => {
               </Button>
             </Link>
           )}
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="text-foreground focus:outline-none cursor-pointer"
+            >
+              {isMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
@@ -107,6 +121,21 @@ const Header = () => {
               >
                 Contact
               </NavLink>
+
+              <div className="pt-4 pb-2 border-t border-border">
+                <div className="space-y-2">
+                  <Link to="/login" className="block">
+                    <Button variant="primary" size="sm" width="full">
+                      Login
+                    </Button>
+                  </Link>
+                  <Link to="/register" className="block">
+                    <Button variant="outline" size="sm" width="full">
+                      Register
+                    </Button>
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         )}
