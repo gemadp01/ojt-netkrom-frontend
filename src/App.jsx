@@ -11,6 +11,7 @@ import RegisterPage from "@/pages/RegisterPage";
 import DashboardPage from "@/pages/admin/DashboardPage";
 import ProductManagementPage from "@/pages/admin/ProductManagementPage";
 import CreateProductPage from "@/pages/admin/CreateProductPage";
+import ProductDetailPage from "@/pages/ProductDetailPage";
 
 function App() {
   const location = useLocation();
@@ -26,6 +27,7 @@ function App() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/products/:productId" element={<ProductDetailPage />} />
 
         <Route path="/admin">
           <Route path="dashboard" element={<DashboardPage />} />

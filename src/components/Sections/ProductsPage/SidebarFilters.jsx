@@ -3,15 +3,16 @@ import { Filter, Search } from "lucide-react";
 import { useState } from "react";
 
 // List of categories (data from API)
-const categories = [
-  "All",
-  "Electronics",
-  "Fashion",
-  "Home & Living",
-  "Sports",
-  "Books",
-  "Beauty",
-];
+const CATEGORY_LABELS = {
+  ELECTRONICS: "Electronics",
+  CLOTHING_FASHION: "Clothing & Fashion",
+  HOME_GARDEN: "Home & Garden",
+  SPORTS_OUTDOORS: "Sports & Outdoors",
+  BOOKS_MEDIA: "Books & Media",
+  TOYS_GAMES: "Toys & Games",
+  HEALTH_BEAUTY: "Health & Beauty",
+  AUTOMOTIVE: "Automotive",
+};
 
 const SidebarFilters = ({
   searchTerm,
@@ -65,13 +66,24 @@ const SidebarFilters = ({
               Category
             </label>
             <div className="space-y-2">
-              {categories.map((category) => (
-                <label key={category} className="flex items-center">
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  name="category"
+                  value="All"
+                  checked={selectedCategory === "All"}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="text-indigo-600 focus:ring-indigo-500"
+                />
+                <span className="ml-2 text-sm text-text">All</span>
+              </label>
+              {Object.entries(CATEGORY_LABELS).map(([key, category]) => (
+                <label key={key} className="flex items-center">
                   <input
                     type="radio"
                     name="category"
-                    value={category}
-                    checked={selectedCategory === category}
+                    value={key}
+                    checked={selectedCategory === key}
                     onChange={(e) => setSelectedCategory(e.target.value)}
                     className="text-indigo-600 focus:ring-indigo-500"
                   />

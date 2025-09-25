@@ -1,7 +1,7 @@
 import { Badge } from "@/components/common/Badge";
 import { Button } from "@/components/common/Button";
 import clsx from "clsx";
-import { ArrowRight, Star } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 const defaultIconSize = "w-8 h-8";
 
@@ -54,14 +54,14 @@ export const ProductCard = ({ product, viewMode, formatPrice }) => {
         }`}
       >
         <img
-          src={product.image}
+          src={`http://localhost:3000/${product.image}`}
           alt={product.name}
           className={`object-cover ${
             viewMode === "list" ? "w-full h-48" : "w-full h-64"
           }`}
         />
         <Badge>{product.category}</Badge>
-        {!product.inStock && (
+        {!product.stock && (
           <div className="absolute inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
             <span className="bg-red-600 text-surface px-4 py-2 rounded-lg font-semibold">
               Out of Stock
@@ -105,14 +105,14 @@ export const ProductCard = ({ product, viewMode, formatPrice }) => {
             {formatPrice(product.price)}
           </span>
           <Button
-            variant={product.inStock ? "primary" : "muted"}
+            variant={product.stock ? "primary" : "muted"}
             size="md"
             width="full"
             className="flex items-center justify-center"
-            disabled={!product.inStock}
+            disabled={!product.stock}
           >
-            {product.inStock ? "View Details" : "Out of Stock"}
-            {product.inStock && <ArrowRight className="ml-2 h-4 w-4" />}
+            {product.stock ? "View Details" : "Out of Stock"}
+            {product.stock ? <ArrowRight className="ml-2 h-4 w-4" /> : ""}
           </Button>
         </div>
       </div>
