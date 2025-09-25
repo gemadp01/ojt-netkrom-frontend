@@ -1,6 +1,17 @@
 import { ShoppingBag } from "lucide-react";
 import { NavLink } from "react-router";
 
+const CATEGORY_LABELS = {
+  ELECTRONICS: "Electronics",
+  CLOTHING_FASHION: "Clothing & Fashion",
+  HOME_GARDEN: "Home & Garden",
+  SPORTS_OUTDOORS: "Sports & Outdoors",
+  BOOKS_MEDIA: "Books & Media",
+  TOYS_GAMES: "Toys & Games",
+  HEALTH_BEAUTY: "Health & Beauty",
+  AUTOMOTIVE: "Automotive",
+};
+
 const Footer = () => {
   return (
     <footer className="bg-foreground text-surface py-12">
@@ -58,40 +69,18 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Categories</h3>
             {/* data will be fetched */}
-            {/* <ul className="space-y-2">
-              <li>
-                <NavLink
-                  to=""
-                  className="text-subtle-text hover:text-surface transition-colors"
-                >
-                  Electronics
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to=""
-                  className="text-subtle-text hover:text-surface transition-colors"
-                >
-                  Fashion
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to=""
-                  className="text-subtle-text hover:text-surface transition-colors"
-                >
-                  Home & Living
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to=""
-                  className="text-subtle-text hover:text-surface transition-colors"
-                >
-                  Sports
-                </NavLink>
-              </li>
-            </ul> */}
+            <ul className="space-y-2">
+              {Object.entries(CATEGORY_LABELS).map(([key, value]) => (
+                <li key={key}>
+                  <NavLink
+                    to="/products"
+                    className="text-subtle-text hover:text-surface transition-colors"
+                  >
+                    {value}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div>
