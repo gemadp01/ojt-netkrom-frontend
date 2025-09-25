@@ -5,10 +5,12 @@ import SidebarItem from "@/components/AdminLayout/Sidebar/SidebarItem";
 import SidebarHeader from "@/components/AdminLayout/Sidebar/SidebarHeader";
 import { Button } from "@/components/common/Button";
 import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
 
 const AdminLayout = ({ title, rightSection, children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSidebarOpen = useCallback((tab) => {
     setSidebarOpen(tab);
@@ -24,9 +26,10 @@ const AdminLayout = ({ title, rightSection, children }) => {
   const handleLogout = async (e) => {
     e.preventDefault();
 
-    await fetch("/api/auth/logout", { method: "POST" });
+    await fetch("/api/auth/logout");
 
     localStorage.removeItem("token");
+    dispatch({ type: "USER_LOGOUT" });
 
     navigate("/login");
   };

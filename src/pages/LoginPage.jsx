@@ -49,7 +49,7 @@ const LoginPage = () => {
         }
       } else {
         setLoginSuccess(true);
-        setStatus(result.message);
+        // setStatus(result.message);
         localStorage.setItem("token", result.token);
       }
     } catch (error) {

@@ -23,8 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
-# component test
+# test
 src/components/common/Beranda.jsx
 src/components/common/QuizApp.jsx
 src/components/common/TestCode.jsx
-
+src/store/counter.js
+src/pages/CounterPage.jsx
