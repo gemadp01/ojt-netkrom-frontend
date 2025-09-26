@@ -1,5 +1,6 @@
 import { Button } from "@/components/common/Button";
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 
 const HeroSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -51,8 +52,12 @@ const HeroSection = () => {
           {heroSlides[currentSlide].subtitle}
         </p>
         <div className="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
-          <Button>Explore Products</Button>
-          <Button variant="outline">Learn More</Button>
+          <Link to="/products">
+            <Button>Explore Products</Button>
+          </Link>
+          <Link to="/about">
+            <Button variant="outline">Learn More</Button>
+          </Link>
         </div>
       </div>
 

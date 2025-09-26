@@ -1,27 +1,22 @@
 import React, { useCallback, useState } from "react";
-import { Menu, ChevronDown, LogOut } from "lucide-react";
+import { Menu, ChevronDown, LogOut, User } from "lucide-react";
 import { AdminPage } from "@/components/guard/AdminPage";
 import SidebarItem from "@/components/AdminLayout/Sidebar/SidebarItem";
 import SidebarHeader from "@/components/AdminLayout/Sidebar/SidebarHeader";
 import { Button } from "@/components/common/Button";
-import { useNavigate } from "react-router";
-import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
 
 const AdminLayout = ({ title, rightSection, children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const userSelector = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleSidebarOpen = useCallback((tab) => {
     setSidebarOpen(tab);
   }, []);
-
-  const adminUser = {
-    name: "Sarah Admin",
-    email: "sarah@catalogstore.com",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108755-2616c66e1de0?w=40&h=40&fit=crop",
-  };
 
   const handleLogout = async (e) => {
     e.preventDefault();
@@ -53,16 +48,15 @@ const AdminLayout = ({ title, rightSection, children }) => {
 
           <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-200">
             <div className="flex items-center">
-              <img
-                className="h-8 w-8 rounded-full object-cover"
-                src={adminUser.avatar}
-                alt="Admin"
-              />
+              <div className="w-8 h-8 bg-foreground rounded-full flex items-center justify-center p-2">
+                <User className="h-4 w-4 text-background" />
+              </div>
+
               <div className="ml-3 flex-1">
                 <p className="text-sm font-medium text-gray-900">
-                  {adminUser.name}
+                  {userSelector.name}
                 </p>
-                <p className="text-sm text-gray-500">{adminUser.email}</p>
+                <p className="text-sm text-gray-500">{userSelector.email}</p>
               </div>
               <form onSubmit={handleLogout}>
                 <Button type="submit" variant="icon" size="sm">
@@ -86,6 +80,7 @@ const AdminLayout = ({ title, rightSection, children }) => {
           {/* Header */}
           <div className="bg-white shadow-sm border-b border-gray-200">
             <div className="flex items-center justify-between h-16 px-6">
+              {/* kiri */}
               <div className="flex items-center">
                 <Button
                   variant="icon"
@@ -97,22 +92,43 @@ const AdminLayout = ({ title, rightSection, children }) => {
                 </Button>
               </div>
 
+              {/* kanan */}
               <div className="flex items-center space-x-4">
                 <div className="relative">
-                  <button className="flex items-center space-x-3 p-2 text-sm rounded-lg hover:bg-gray-100">
-                    <img
-                      className="h-8 w-8 rounded-full object-cover"
-                      src={adminUser.avatar}
-                      alt="Admin"
-                    />
-                    <div className="hidden md:block text-left">
+                  <button
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                    className="flex items-center space-x-3 p-2 text-sm rounded-lg hover:bg-gray-100"
+                  >
+                    <div className="w-8 h-8 bg-foreground rounded-full flex items-center justify-center p-2">
+                      <User className="h-4 w-4 text-background" />
+                    </div>
+                    <div className="block text-left">
                       <div className="text-sm font-medium text-gray-900">
-                        {adminUser.name}
+                        {userSelector.name}
                       </div>
                       <div className="text-sm text-gray-500">Admin</div>
                     </div>
                     <ChevronDown className="h-4 w-4 text-gray-400" />
                   </button>
+
+                  {/* dropdown */}
+                  {dropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg">
+                      <Link to="/admin/profile">
+                        <button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                          <User className="h-4 w-4 mr-2" /> Profile
+                        </button>
+                      </Link>
+                      <form onSubmit={handleLogout}>
+                        <button
+                          type="submit"
+                          className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          <LogOut className="h-4 w-4 mr-2" /> Logout
+                        </button>
+                      </form>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

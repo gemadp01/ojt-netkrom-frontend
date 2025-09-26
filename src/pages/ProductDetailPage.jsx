@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Heart, Share2, ArrowLeft, CheckCircle, ZoomIn, X } from "lucide-react";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
+import { formatPrice } from "@/lib/formatPrice";
+import { Button } from "@/components/common/Button";
 
 const ProductDetailPage = () => {
   const { productId } = useParams();
@@ -97,14 +99,6 @@ const ProductDetailPage = () => {
     }
   };
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-    }).format(price);
-  };
-
   useEffect(() => {
     fetchProduct();
   }, []);
@@ -115,9 +109,9 @@ const ProductDetailPage = () => {
       <div className="bg-gray-50 py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex items-center space-x-2 text-sm">
-            <a href="#" className="text-gray-500 hover:text-indigo-600">
+            <Link to="/" className="text-gray-500 hover:text-foreground">
               Home
-            </a>
+            </Link>
             <span className="text-gray-400">/</span>
             <span className="text-gray-500">
               {product.category.includes("_")
@@ -139,10 +133,12 @@ const ProductDetailPage = () => {
 
       {/* Back Button */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <button className="flex items-center text-gray-600 hover:text-indigo-600 transition-colors">
-          <ArrowLeft className="h-5 w-5 mr-2" />
-          Back to Products
-        </button>
+        <Link to="/products">
+          <Button variant="outline">
+            <ArrowLeft className="h-5 w-5 mr-2" />
+            Back to Products
+          </Button>
+        </Link>
       </div>
 
       {/* Product Detail */}
@@ -168,13 +164,13 @@ const ProductDetailPage = () => {
           {/* Product Info */}
           <div>
             <div className="mb-6">
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              <h1 className="text-3xl font-bold text-heading mb-4">
                 {product.name}
               </h1>
 
               {/* Price */}
               <div className="flex items-center space-x-4 mb-6">
-                <span className="text-3xl font-bold text-indigo-600">
+                <span className="text-3xl font-bold text-foreground">
                   {formatPrice(product.price)}
                 </span>
               </div>
@@ -232,7 +228,7 @@ const ProductDetailPage = () => {
                   onClick={() => setActiveTab(tab)}
                   className={`py-4 px-1 border-b-2 font-medium text-sm capitalize transition-colors ${
                     activeTab === tab
-                      ? "border-indigo-500 text-indigo-600"
+                      ? "border-foreground text-text"
                       : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                   }`}
                 >

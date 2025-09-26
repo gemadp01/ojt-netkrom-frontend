@@ -24,7 +24,7 @@ const ContactSection = () => {
             icon={Mail}
             iconSize="h-12 w-12"
             title="Email"
-            description="gemadp01@gmail.com"
+            description="hello@catalogstore.com"
           />
 
           <ContactCard

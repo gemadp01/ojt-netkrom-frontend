@@ -1,4 +1,5 @@
 import { Button } from "@/components/common/Button";
+import { Link } from "react-router";
 
 const CallToActionSection = () => {
   return (
@@ -11,7 +12,9 @@ const CallToActionSection = () => {
           Join thousands of satisfied customers and discover amazing products
           today
         </p>
-        <Button>Browse Catalog</Button>
+        <Link to="/products">
+          <Button>Browse Catalog</Button>
+        </Link>
       </div>
     </section>
   );

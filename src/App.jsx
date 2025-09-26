@@ -15,6 +15,7 @@ import ProductDetailPage from "@/pages/ProductDetailPage";
 import CounterPage from "@/pages/CounterPage";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
+import AdminProfilePage from "@/pages/admin/AdminProfilePage";
 
 function App() {
   const location = useLocation();
@@ -86,6 +87,7 @@ function App() {
 
         {/* Admin Route */}
         <Route path="/admin">
+          <Route path="profile" element={<AdminProfilePage />} />
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="products" element={<ProductManagementPage />} />
           <Route path="products/create" element={<CreateProductPage />} />
