@@ -392,7 +392,7 @@ const CreateProductPage = () => {
             <div className="relative">
               <img
                 src={preview}
-                alt={`Product `}
+                alt={`Product Product Image`}
                 className="w-24 h-24 object-cover rounded-lg"
               />
               <button

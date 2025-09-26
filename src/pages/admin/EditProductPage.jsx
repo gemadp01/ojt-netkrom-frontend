@@ -22,7 +22,6 @@ const EditProductPage = () => {
   const navigate = useNavigate();
   const [status, setStatus] = useState(null);
   const [preview, setPreview] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [isLoadingProduct, setIsLoadingProduct] = useState(true);
 
   const {
@@ -41,14 +40,8 @@ const EditProductPage = () => {
       sku: "",
       stock: 0,
       weight: 0,
-      image: null,
     },
   });
-
-  // Fetch product data when component mounts (for edit mode)
-  useEffect(() => {
-    fetchProductData();
-  }, []);
 
   const fetchProductData = async () => {
     try {
@@ -75,6 +68,7 @@ const EditProductPage = () => {
         sku: product.sku || "",
         stock: product.stock || 0,
         weight: product.weight || 0,
+        image: product.image || null,
       });
 
       // Set preview image if exists
@@ -92,66 +86,72 @@ const EditProductPage = () => {
     }
   };
 
+  // Fetch product data when component mounts (for edit mode)
+  useEffect(() => {
+    fetchProductData();
+  }, []);
+
+  const getImageUrl = (image) => {
+    if (!image) return null;
+
+    // cek apakah dia blob
+    if (image.startsWith("blob:")) {
+      return image; // langsung pakai blob
+    }
+
+    // kalau bukan blob → berarti filename dari server
+    return `http://localhost:3000/${image}`;
+  };
+
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      // Validate file size (2MB limit)
-      if (file.size > 2000000) {
-        setStatus({
-          success: false,
-          message: "File size must be less than 2MB",
-        });
-        return;
-      }
 
-      // Validate file type
-      if (!["image/jpeg", "image/png", "image/jpg"].includes(file.type)) {
-        setStatus({
-          success: false,
-          message: "Only JPG and PNG files are allowed",
-        });
-        return;
-      }
-
-      // Create preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
+    const allowedTypes = ["image/jpeg", "image/png"];
+    if (file.size >= 2000000 || !allowedTypes.includes(file.type)) {
+      setPreview("");
+      return;
     }
+
+    // In real app, you would upload to server and get URLs
+    const newImage = URL.createObjectURL(file);
+
+    setPreview(newImage);
   };
 
   const handleRemoveImage = () => {
-    setPreview(null);
     setValue("image", null);
-    // Reset file input
-    const fileInput = document.querySelector('input[type="file"]');
-    if (fileInput) {
-      fileInput.value = "";
-    }
+    setPreview("");
   };
 
   const onSubmit = async (data) => {
+    const token = localStorage.getItem("token");
     try {
-      setIsLoading(true);
       setStatus(null);
 
       const formData = new FormData();
 
       // Append all form fields
-      Object.keys(data).forEach((key) => {
-        if (key === "image" && data[key] && data[key][0]) {
-          formData.append("image", data[key][0]);
-        } else if (key !== "image") {
-          formData.append(key, data[key]);
-        }
-      });
+      formData.append("name", data.name);
+      formData.append("description", data.description);
+      formData.append("category", data.category);
+      formData.append("status", data.status);
+      formData.append("price", data.price);
+      formData.append("sku", data.sku);
+      formData.append("stock", data.stock);
+      formData.append("weight", data.weight);
+      if (data.image instanceof File) {
+        formData.append("image", data.image);
+      } else if (typeof data.image === "string") {
+        formData.append("image", data.image);
+      }
 
       const response = await fetch(
         "http://localhost:3000/api/products/" + productId,
         {
           method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
           body: formData,
         }
       );
@@ -177,8 +177,6 @@ const EditProductPage = () => {
         success: false,
         message: error.message || "Failed to save product",
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -446,24 +444,30 @@ const EditProductPage = () => {
               </div>
               <input
                 type="file"
+                accept="image/*"
                 {...register("image", {
-                  required: preview ? false : "Image is required",
-                  validate: {
-                    lessThan2MB: (files) =>
-                      !files[0] ||
-                      files[0]?.size < 2000000 ||
-                      "Max file size is 2MB",
-                    acceptedFormats: (files) =>
-                      !files[0] ||
-                      ["image/jpeg", "image/png", "image/jpg"].includes(
-                        files[0]?.type
-                      ) ||
-                      "Only JPG/PNG files are allowed",
+                  validate: (files) => {
+                    // kalau tidak ada file baru, validasi dilewati
+                    if (typeof files === "string") {
+                      return true;
+                    }
+
+                    const file = files?.[0];
+                    // const file = files[0];
+                    if (file.size > 2000000) {
+                      return "Max file size is 2MB";
+                    }
+                    if (!["image/jpeg", "image/png"].includes(file.type)) {
+                      return "Only JPG/PNG files are allowed";
+                    }
+                    return true;
                   },
                 })}
                 className="hidden"
-                accept="image/*"
-                onChange={handleImageUpload}
+                onChange={(e) => {
+                  handleImageUpload(e); // preview
+                  register("image").onChange(e); // sync dengan RHF
+                }}
               />
             </label>
             {errors.image && (
@@ -476,11 +480,7 @@ const EditProductPage = () => {
           {preview && (
             <div className="relative inline-block">
               <img
-                src={
-                  typeof preview === "string"
-                    ? `http://localhost:3000/${preview}`
-                    : preview
-                }
+                src={getImageUrl(preview)}
                 alt="Product preview"
                 className="w-24 h-24 object-cover rounded-lg border border-gray-200"
               />

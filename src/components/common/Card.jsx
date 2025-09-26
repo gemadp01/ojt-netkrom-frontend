@@ -60,7 +60,17 @@ export const ProductCard = ({ product, viewMode, formatPrice }) => {
             viewMode === "list" ? "w-full h-48" : "w-full h-64"
           }`}
         />
-        <Badge>{product.category}</Badge>
+        <Badge>
+          {product.category.includes("_")
+            ? product.category
+                .split("_")
+                .map(
+                  (word) =>
+                    word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+                )
+                .join(" & ")
+            : product.category}
+        </Badge>
         {!product.stock && (
           <div className="absolute inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
             <span className="bg-red-600 text-surface px-4 py-2 rounded-lg font-semibold">
