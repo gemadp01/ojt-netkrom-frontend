@@ -1,124 +1,203 @@
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { ArrowLeft, Save, AlertCircle, Upload, X, Loader2 } from "lucide-react";
 import AdminLayout from "@/components/AdminLayout/AdminLayout";
 import { Button } from "@/components/common/Button";
-import { AlertCircle, ArrowLeft, Save, Upload, X } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 
-const CreateProductPage = () => {
-  const [preview, setPreview] = useState("");
-  const [status, setStatus] = useState();
+// Category labels constant
+const CATEGORY_LABELS = {
+  ELECTRONICS: "Electronics",
+  CLOTHING_FASHION: "Clothing & Fashion",
+  HOME_GARDEN: "Home & Garden",
+  SPORTS_OUTDOORS: "Sports & Outdoors",
+  BOOKS_MEDIA: "Books & Media",
+  TOYS_GAMES: "Toys & Games",
+  HEALTH_BEAUTY: "Health & Beauty",
+  AUTOMOTIVE: "Automotive",
+};
+
+const EditProductPage = () => {
+  const { productId } = useParams();
+  const navigate = useNavigate();
+  const [status, setStatus] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingProduct, setIsLoadingProduct] = useState(true);
+
   const {
     register,
     handleSubmit,
-    setValue,
-    setError,
     formState: { errors, isSubmitting },
+    setValue,
     reset,
   } = useForm({
-    mode: "onChange",
-    reValidateMode: "onChange",
+    defaultValues: {
+      name: "",
+      description: "",
+      category: "",
+      status: "active",
+      price: 0,
+      sku: "",
+      stock: 0,
+      weight: 0,
+      image: null,
+    },
   });
 
-  const CATEGORY_LABELS = {
-    ELECTRONICS: "Electronics",
-    CLOTHING_FASHION: "Clothing & Fashion",
-    HOME_GARDEN: "Home & Garden",
-    SPORTS_OUTDOORS: "Sports & Outdoors",
-    BOOKS_MEDIA: "Books & Media",
-    TOYS_GAMES: "Toys & Games",
-    HEALTH_BEAUTY: "Health & Beauty",
-    AUTOMOTIVE: "Automotive",
-  };
+  // Fetch product data when component mounts (for edit mode)
+  useEffect(() => {
+    fetchProductData();
+  }, []);
 
-  const onSubmit = async (data) => {
-    const token = localStorage.getItem("token");
-
-    const formData = new FormData();
-
-    formData.append("name", data.name);
-    formData.append("description", data.description);
-    formData.append("category", data.category);
-    formData.append("status", data.status);
-    formData.append("price", data.price);
-    formData.append("sku", data.sku);
-    formData.append("stock", data.stock);
-    if (data.weight !== "") formData.append("weight", data.weight);
-    formData.append("image", data.image[0]);
-
+  const fetchProductData = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/products", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
+      setIsLoadingProduct(true);
+      const response = await fetch(
+        `http://localhost:3000/api/products/${productId}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch product data");
+      }
 
       const result = await response.json();
 
-      if (!response.ok) {
-        // Kalau backend ngirim { success: false, message: "..." }
-        if (result.success === false) {
-          throw new Error(result.message);
-        }
+      const { product } = result;
 
-        // Kalau backend ngirim errors array
-        if (result.errors) {
-          result.errors.forEach((err) => {
-            setError(err.path, {
-              type: "server",
-              message: err.msg,
-            });
-          });
-        }
+      // Populate form with existing product data
+      reset({
+        name: product.name || "",
+        description: product.description || "",
+        category: product.category || "",
+        status: product.status || "active",
+        price: product.price || 0,
+        sku: product.sku || "",
+        stock: product.stock || 0,
+        weight: product.weight || 0,
+      });
 
-        return;
+      // Set preview image if exists
+      if (product.image) {
+        setPreview(product.image);
       }
-      setStatus(result);
-      reset();
-      setPreview(""); // reset image preview
-      setValue("image", null); // reset field image RHF
     } catch (error) {
+      console.error("Error fetching product:", error);
       setStatus({
         success: false,
-        message: (error.message = "Something went wrong"),
+        message: "Failed to load product data",
       });
+    } finally {
+      setIsLoadingProduct(false);
     }
   };
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    const allowedTypes = ["image/jpeg", "image/png"];
-    if (file.size >= 2000000 || !allowedTypes.includes(file.type)) {
-      setPreview("");
-      return;
+    if (file) {
+      // Validate file size (2MB limit)
+      if (file.size > 2000000) {
+        setStatus({
+          success: false,
+          message: "File size must be less than 2MB",
+        });
+        return;
+      }
+
+      // Validate file type
+      if (!["image/jpeg", "image/png", "image/jpg"].includes(file.type)) {
+        setStatus({
+          success: false,
+          message: "Only JPG and PNG files are allowed",
+        });
+        return;
+      }
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
-
-    // In real app, you would upload to server and get URLs
-    const newImage = URL.createObjectURL(file);
-
-    setPreview(newImage);
   };
 
   const handleRemoveImage = () => {
+    setPreview(null);
     setValue("image", null);
-    setPreview("");
+    // Reset file input
+    const fileInput = document.querySelector('input[type="file"]');
+    if (fileInput) {
+      fileInput.value = "";
+    }
   };
 
-  useEffect(() => {
-    if (status) {
-      const timer = setTimeout(() => {
-        setStatus(undefined);
-      }, 5000);
+  const onSubmit = async (data) => {
+    try {
+      setIsLoading(true);
+      setStatus(null);
 
-      return () => clearTimeout(timer); // cleanup biar nggak leak
+      const formData = new FormData();
+
+      // Append all form fields
+      Object.keys(data).forEach((key) => {
+        if (key === "image" && data[key] && data[key][0]) {
+          formData.append("image", data[key][0]);
+        } else if (key !== "image") {
+          formData.append(key, data[key]);
+        }
+      });
+
+      const response = await fetch(
+        "http://localhost:3000/api/products/" + productId,
+        {
+          method: "PUT",
+          body: formData,
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setStatus({
+          success: true,
+          message: "Product updated successfully!",
+        });
+
+        // Redirect after 2 seconds
+        setTimeout(() => {
+          navigate("/admin/products");
+        }, 2000);
+      } else {
+        throw new Error(result.message || "Something went wrong");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setStatus({
+        success: false,
+        message: error.message || "Failed to save product",
+      });
+    } finally {
+      setIsLoading(false);
     }
-  }, [status]);
+  };
+
+  if (isLoadingProduct) {
+    return (
+      <AdminLayout title="Edit Product">
+        <div className="flex items-center justify-center min-h-96">
+          <div className="flex items-center space-x-2">
+            <Loader2 className="h-6 w-6 animate-spin" />
+            <span>Loading product data...</span>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
-    <AdminLayout title="Create Product">
-      <div className="my-2 border-b border-border">
+    <AdminLayout title="Edit Product">
+      <div className="my-2 border-b border-gray-200">
         <div className="flex items-center">
           <Link to="/admin/products">
             <Button
@@ -134,14 +213,14 @@ const CreateProductPage = () => {
       </div>
 
       {status?.success === true && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center">
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center mb-6">
           <Save className="h-5 w-5 text-green-500 mr-3" />
           <span className="text-green-700">{status?.message}</span>
         </div>
       )}
 
       {status?.success === false && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center mb-6">
           <AlertCircle className="h-5 w-5 text-red-500 mr-3" />
           <span className="text-red-700">{status?.message}</span>
         </div>
@@ -265,10 +344,11 @@ const CreateProductPage = () => {
                     required: "Price is required",
                     min: {
                       value: 1,
-                      message: "Price must be greater than 1",
+                      message: "Price must be greater than 0",
                     },
+                    valueAsNumber: true,
                   })}
-                  min={0}
+                  min={1}
                   className="w-full pl-12 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="0"
                 />
@@ -289,12 +369,12 @@ const CreateProductPage = () => {
                 {...register("sku", {
                   required: "SKU is required",
                   maxLength: {
-                    value: 20,
-                    message: "SKU must be less than 20 characters",
+                    value: 50,
+                    message: "SKU must be less than 50 characters",
                   },
                 })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Enter SKU (Stock Keeping Unit / Kode Unik)"
+                placeholder="Enter SKU (Stock Keeping Unit)"
               />
               {errors.sku && (
                 <p className="text-red-500 text-sm mt-1">
@@ -311,10 +391,11 @@ const CreateProductPage = () => {
                 type="number"
                 {...register("stock", {
                   required: "Stock is required",
-                  minLength: {
-                    value: 1,
-                    message: "Stock must be greater than 1",
+                  min: {
+                    value: 0,
+                    message: "Stock must be 0 or greater",
                   },
+                  valueAsNumber: true,
                 })}
                 min={0}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
@@ -334,8 +415,10 @@ const CreateProductPage = () => {
               <input
                 type="number"
                 min={0}
-                {...register("weight")}
                 step="0.1"
+                {...register("weight", {
+                  valueAsNumber: true,
+                })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="0.0"
               />
@@ -364,21 +447,23 @@ const CreateProductPage = () => {
               <input
                 type="file"
                 {...register("image", {
-                  required: "Image is required",
+                  required: preview ? false : "Image is required",
                   validate: {
                     lessThan2MB: (files) =>
-                      files[0]?.size < 2000000 || "Max file size is 2MB",
+                      !files[0] ||
+                      files[0]?.size < 2000000 ||
+                      "Max file size is 2MB",
                     acceptedFormats: (files) =>
-                      ["image/jpeg", "image/png"].includes(files[0]?.type) ||
+                      !files[0] ||
+                      ["image/jpeg", "image/png", "image/jpg"].includes(
+                        files[0]?.type
+                      ) ||
                       "Only JPG/PNG files are allowed",
                   },
                 })}
                 className="hidden"
                 accept="image/*"
-                onChange={(e) => {
-                  handleImageUpload(e); // preview
-                  register("image").onChange(e); // sync dengan RHF
-                }}
+                onChange={handleImageUpload}
               />
             </label>
             {errors.image && (
@@ -389,16 +474,20 @@ const CreateProductPage = () => {
           </div>
 
           {preview && (
-            <div className="relative">
+            <div className="relative inline-block">
               <img
-                src={preview}
-                alt={`Product `}
-                className="w-24 h-24 object-cover rounded-lg"
+                src={
+                  typeof preview === "string"
+                    ? `http://localhost:3000/${preview}`
+                    : preview
+                }
+                alt="Product preview"
+                className="w-24 h-24 object-cover rounded-lg border border-gray-200"
               />
               <button
                 type="button"
                 onClick={handleRemoveImage}
-                className="absolute -top-2 left-20 bg-red-500 text-white rounded-full p-1"
+                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -407,23 +496,28 @@ const CreateProductPage = () => {
         </div>
 
         {/* Form Actions */}
-        <div className="border-box flex flex-col space-y-1 m-2 lg:flex-row lg:items-center lg:justify-end lg:space-x-4">
+        <div className="flex flex-col sm:flex-row gap-4 justify-end">
           <Link to="/admin/products">
-            <Button type="button" variant="outline">
+            <Button type="button" variant="outline" disabled={isSubmitting}>
               Cancel
             </Button>
           </Link>
 
-          <Button type="submit" variant="primary">
+          <Button
+            type="submit"
+            variant="primary"
+            disabled={isSubmitting}
+            className="min-w-[140px]"
+          >
             {isSubmitting ? (
               <div className="flex items-center">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-border mr-2"></div>
-                Creating...
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Updating...
               </div>
             ) : (
               <>
                 <Save className="h-4 w-4 mr-2" />
-                Create Product
+                Update Product
               </>
             )}
           </Button>
@@ -433,4 +527,4 @@ const CreateProductPage = () => {
   );
 };
 
-export default CreateProductPage;
+export default EditProductPage;

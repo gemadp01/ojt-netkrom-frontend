@@ -16,6 +16,7 @@ import CounterPage from "@/pages/CounterPage";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import AdminProfilePage from "@/pages/admin/AdminProfilePage";
+import EditProductPage from "@/pages/admin/EditProductPage";
 
 function App() {
   const location = useLocation();
@@ -91,6 +92,7 @@ function App() {
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="products" element={<ProductManagementPage />} />
           <Route path="products/create" element={<CreateProductPage />} />
+          <Route path="products/:productId" element={<EditProductPage />} />
         </Route>
 
         <Route path="*" element={<div>404 Not Found</div>} />
