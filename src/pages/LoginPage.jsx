@@ -27,6 +27,7 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [status, setStatus] = useState("");
+  const [role, setRole] = useState("");
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
@@ -55,6 +56,8 @@ const LoginPage = () => {
         // setStatus(result.message);
         localStorage.setItem("token", result.token);
         dispatch({ type: "USER_LOGIN", payload: result.user });
+
+        setRole(result.user.role);
       }
     } catch (error) {
       setStatus((error.message = "An error occurred"));
@@ -70,9 +73,18 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (loginSuccess) {
-      const timer = setTimeout(() => {
-        navigate("/admin/dashboard");
-      }, 3000);
+      let timer; // simpan id timer
+
+      if (role === "admin") {
+        timer = setTimeout(() => {
+          navigate("/admin/dashboard");
+        }, 3000);
+      } else {
+        timer = setTimeout(() => {
+          navigate("/products");
+        }, 3000);
+      }
+
       return () => clearTimeout(timer);
     }
   }, [loginSuccess]);
@@ -87,7 +99,8 @@ const LoginPage = () => {
             </div>
             <h2 className="text-2xl font-bold text-heading mb-4">{status}</h2>
             <p className="text-gray-600 mb-6">
-              Welcome back! Redirecting you to your dashboard...
+              Welcome back! Redirecting you to
+              {role === "admin" ? " your Dashboard" : " the Products Page"}...
             </p>
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto"></div>
           </div>
