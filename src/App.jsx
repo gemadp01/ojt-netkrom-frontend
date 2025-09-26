@@ -17,6 +17,7 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import AdminProfilePage from "@/pages/admin/AdminProfilePage";
 import EditProductPage from "@/pages/admin/EditProductPage";
+import WishlistPage from "@/pages/WishlistPage";
 
 function App() {
   const location = useLocation();
@@ -84,6 +85,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/products/:productId" element={<ProductDetailPage />} />
+        <Route path="/wishlist" element={<WishlistPage />} />
         <Route path="/counter" element={<CounterPage />} />
 
         {/* Admin Route */}

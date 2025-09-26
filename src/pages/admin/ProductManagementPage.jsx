@@ -1,5 +1,6 @@
 import AdminLayout from "@/components/AdminLayout/AdminLayout";
 import { Button } from "@/components/common/Button";
+import { formatPrice } from "@/lib/formatPrice";
 import { Edit, Eye, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
@@ -147,7 +148,7 @@ const ProductManagementPage = () => {
                       product.category.slice(1).toLowerCase()}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                  Rp. {product.price}
+                  {formatPrice(product.price)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {product.stock}
