@@ -23,7 +23,7 @@ const ProductDetailPage = () => {
   const [activeTab, setActiveTab] = useState("description");
   const [isWishlist, setIsWishlist] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
-  //   id: 1,
+  // const [status, setStatus] = useState("");
   //   name: "Premium Wireless Headphones",
   //   brand: "AudioTech Pro",
   //   price: 1299000,
@@ -98,6 +98,35 @@ const ProductDetailPage = () => {
       alert(error.message);
     }
   };
+
+  // const addToWishlist = async (e) => {
+  //   e.preventDefault();
+  //   console.log(productId);
+  //   return;
+  //   try {
+  //     const response = await fetch("http://localhost:3000/api/wishlist", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json", // penting biar server tahu ini JSON
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       },
+  //       body: JSON.stringify({ productId }),
+  //     });
+
+  //     const result = await response.json();
+  //     console.log(result);
+
+  //     if (!response.ok) {
+  //       if (result.success === false) throw new Error(result.message);
+  //       throw new Error("Failed to add to wishlist");
+  //     }
+
+  //     alert(result.message);
+  //   } catch (error) {
+  //     alert(error.message);
+  //   }
+  //   setIsWishlist(!isWishlist);
+  // };
 
   useEffect(() => {
     fetchProduct();
@@ -193,7 +222,9 @@ const ProductDetailPage = () => {
             {/* Action Buttons */}
             <div className="space-y-4 mb-8">
               <div className="flex space-x-4">
+                {/* <form onSubmit={addToWishlist}> */}
                 <button
+                  type="submit"
                   onClick={() => setIsWishlist(!isWishlist)}
                   className={`flex-1 border-2 px-6 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center ${
                     isWishlist
@@ -208,6 +239,7 @@ const ProductDetailPage = () => {
                   />
                   {isWishlist ? "In Wishlist" : "Add to Wishlist"}
                 </button>
+                {/* </form> */}
 
                 <button className="flex-1 border-2 border-gray-300 text-gray-700 hover:border-gray-400 px-6 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center">
                   <Share2 className="h-5 w-5 mr-2" />

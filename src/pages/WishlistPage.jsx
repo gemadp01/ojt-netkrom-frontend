@@ -21,88 +21,88 @@ const CATEGORY_LABELS = {
 
 const WishlistPage = () => {
   // Sample wishlist data - in real app this would come from Redux/Context or API
-  // const [wishlistItems, setWishlistItems] = useState([
-  //   {
-  //     id: 1,
-  //     name: "Wireless Bluetooth Headphones",
-  //     description:
-  //       "Premium quality wireless headphones with noise cancellation and 30-hour battery life",
-  //     category: "ELECTRONICS",
-  //     status: "active",
-  //     price: 149.99,
-  //     sku: "WBH-001",
-  //     stock: 25,
-  //     weight: 0.35,
-  //     image:
-  //       "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Smart Fitness Watch",
-  //     description:
-  //       "Advanced fitness tracking with heart rate monitor, GPS, and waterproof design",
-  //     category: "ELECTRONICS",
-  //     status: "active",
-  //     price: 299.99,
-  //     sku: "SFW-002",
-  //     stock: 12,
-  //     weight: 0.08,
-  //     image:
-  //       "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Organic Cotton T-Shirt",
-  //     description:
-  //       "Comfortable and sustainable organic cotton t-shirt in various colors",
-  //     category: "CLOTHING_FASHION",
-  //     status: "active",
-  //     price: 29.99,
-  //     sku: "OCT-003",
-  //     stock: 50,
-  //     weight: 0.2,
-  //     image:
-  //       "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=300&fit=crop",
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Indoor Plant Collection",
-  //     description:
-  //       "Set of 3 beautiful indoor plants perfect for home decoration and air purification",
-  //     category: "HOME_GARDEN",
-  //     status: "active",
-  //     price: 79.99,
-  //     sku: "IPC-004",
-  //     stock: 8,
-  //     weight: 2.5,
-  //     image:
-  //       "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop",
-  //   },
-  // ]);
+  const [wishlistItems, setWishlistItems] = useState([
+    {
+      id: 1,
+      name: "Wireless Bluetooth Headphones",
+      description:
+        "Premium quality wireless headphones with noise cancellation and 30-hour battery life",
+      category: "ELECTRONICS",
+      status: "active",
+      price: 149.99,
+      sku: "WBH-001",
+      stock: 25,
+      weight: 0.35,
+      image:
+        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop",
+    },
+    {
+      id: 2,
+      name: "Smart Fitness Watch",
+      description:
+        "Advanced fitness tracking with heart rate monitor, GPS, and waterproof design",
+      category: "ELECTRONICS",
+      status: "active",
+      price: 299.99,
+      sku: "SFW-002",
+      stock: 12,
+      weight: 0.08,
+      image:
+        "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop",
+    },
+    {
+      id: 3,
+      name: "Organic Cotton T-Shirt",
+      description:
+        "Comfortable and sustainable organic cotton t-shirt in various colors",
+      category: "CLOTHING_FASHION",
+      status: "active",
+      price: 29.99,
+      sku: "OCT-003",
+      stock: 50,
+      weight: 0.2,
+      image:
+        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=300&fit=crop",
+    },
+    {
+      id: 4,
+      name: "Indoor Plant Collection",
+      description:
+        "Set of 3 beautiful indoor plants perfect for home decoration and air purification",
+      category: "HOME_GARDEN",
+      status: "active",
+      price: 79.99,
+      sku: "IPC-004",
+      stock: 8,
+      weight: 2.5,
+      image:
+        "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop",
+    },
+  ]);
 
-  // const removeFromWishlist = (productId) => {
-  //   setWishlistItems((prev) => prev.filter((item) => item.id !== productId));
-  // };
+  const removeFromWishlist = (productId) => {
+    setWishlistItems((prev) => prev.filter((item) => item.id !== productId));
+  };
 
-  // const addToCart = (product) => {
-  //   // In real app, this would dispatch to cart state or call API
-  //   console.log("Adding to cart:", product);
-  //   // Optional: Show toast notification
-  //   alert(`Added ${product.name} to cart!`);
-  // };
+  const addToCart = (product) => {
+    // In real app, this would dispatch to cart state or call API
+    console.log("Adding to cart:", product);
+    // Optional: Show toast notification
+    alert(`Added ${product.name} to cart!`);
+  };
 
-  // const formatPrice = (price) => {
-  //   return new Intl.NumberFormat("en-US", {
-  //     style: "currency",
-  //     currency: "USD",
-  //   }).format(price);
-  // };
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(price);
+  };
 
-  // const getStockStatus = (stock) => {
-  //   if (stock === 0) return { text: "Out of Stock", color: "text-red-500" };
-  //   if (stock <= 5) return { text: "Low Stock", color: "text-orange-500" };
-  //   return { text: "In Stock", color: "text-green-500" };
-  // };
+  const getStockStatus = (stock) => {
+    if (stock === 0) return { text: "Out of Stock", color: "text-red-500" };
+    if (stock <= 5) return { text: "Low Stock", color: "text-orange-500" };
+    return { text: "In Stock", color: "text-green-500" };
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -114,13 +114,13 @@ const WishlistPage = () => {
           </h1>
           <p className="text-gray-600">
             Coming soon...
-            {/* {wishlistItems.length}{" "}
-            {wishlistItems.length === 1 ? "item" : "items"} in your wishlist */}
+            {wishlistItems.length}{" "}
+            {wishlistItems.length === 1 ? "item" : "items"} in your wishlist
           </p>
         </div>
 
         {/* Wishlist Content */}
-        {/* {wishlistItems.length === 0 ? (
+        {wishlistItems.length === 0 ? (
           <div className="text-center py-16">
             <Heart className="mx-auto h-24 w-24 text-gray-300 mb-4" />
             <h2 className="text-2xl font-semibold text-gray-600 mb-2">
@@ -134,7 +134,6 @@ const WishlistPage = () => {
             </button>
           </div>
         ) : (
-          
           <div className="space-y-6">
             {wishlistItems.map((product) => {
               const stockStatus = getStockStatus(product.stock);
@@ -227,10 +226,10 @@ const WishlistPage = () => {
               );
             })}
           </div>
-        )} */}
+        )}
 
         {/* Action Bar (if items exist) */}
-        {/* {wishlistItems.length > 0 && (
+        {wishlistItems.length > 0 && (
           <div className="mt-8 p-6 bg-gray-50 rounded-lg">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
               <div className="text-gray-600">
@@ -259,7 +258,7 @@ const WishlistPage = () => {
               </div>
             </div>
           </div>
-        )} */}
+        )}
       </div>
     </div>
   );
