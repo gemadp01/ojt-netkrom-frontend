@@ -25,57 +25,7 @@ const ProductDetailPage = () => {
   const [isWishlist, setIsWishlist] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
   const userSelector = useSelector((state) => state.user);
-  //   name: "Premium Wireless Headphones",
-  //   brand: "AudioTech Pro",
-  //   price: 1299000,
-  //   originalPrice: 1599000,
-  //   discount: 19,
-  //   rating: 4.8,
-  //   totalReviews: 124,
-  //   inStock: true,
-  //   stockCount: 15,
-  //   sku: "ATP-WH-001",
-  //   category: "Electronics",
-  //   tags: ["wireless", "bluetooth", "noise-canceling", "premium"],
-  //   images: [
-  //     "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&h=600&fit=crop",
-  //     "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=600&h=600&fit=crop",
-  //     "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=600&h=600&fit=crop",
-  //     "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600&h=600&fit=crop",
-  //   ],
-  //   colors: [
-  //     { name: "Black", value: "#000000" },
-  //     { name: "White", value: "#FFFFFF" },
-  //     { name: "Blue", value: "#3B82F6" },
-  //     { name: "Red", value: "#EF4444" },
-  //   ],
-  //   sizes: ["S", "M", "L", "XL"],
-  //   description: `
-  //     Experience premium audio quality with our latest wireless headphones. Featuring advanced noise-cancellation technology,
-  //     these headphones deliver crystal-clear sound and deep bass for an immersive listening experience.
-
-  //     Perfect for music lovers, professionals, and anyone who appreciates high-quality audio. The comfortable over-ear design
-  //     ensures hours of comfortable listening, while the long-lasting battery provides up to 30 hours of playback time.
-  //   `,
-  //   features: [
-  //     "Advanced Active Noise Cancellation",
-  //     "30-hour battery life with fast charging",
-  //     "Premium leather ear cushions",
-  //     "Bluetooth 5.0 connectivity",
-  //     "Built-in microphone for calls",
-  //     "Foldable design for portability",
-  //   ],
-  //   specifications: {
-  //     "Driver Size": "40mm Dynamic",
-  //     "Frequency Response": "20Hz - 20kHz",
-  //     Impedance: "32 Ohms",
-  //     Sensitivity: "105 dB",
-  //     "Battery Life": "30 hours",
-  //     "Charging Time": "2 hours",
-  //     Weight: "280g",
-  //     Connectivity: "Bluetooth 5.0, 3.5mm jack",
-  //   },
-  // };
+  const token = localStorage.getItem("token");
 
   const fetchProduct = async () => {
     try {
@@ -108,7 +58,7 @@ const ProductDetailPage = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -155,7 +105,7 @@ const ProductDetailPage = () => {
 
   useEffect(() => {
     fetchProduct();
-    fetchWishList();
+    if (token) fetchWishList();
   }, [isWishlist]);
 
   return (
@@ -249,7 +199,7 @@ const ProductDetailPage = () => {
             {/* Action Buttons */}
             <div className="space-y-4 mb-8">
               <div className="flex space-x-4">
-                {userSelector.role !== "admin" && (
+                {userSelector.id && userSelector.role !== "admin" ? (
                   <button
                     type="submit"
                     onClick={toggleWishlist}
@@ -266,7 +216,7 @@ const ProductDetailPage = () => {
                     />
                     {isWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
                   </button>
-                )}
+                ) : null}
 
                 <button className="flex-1 border-2 border-gray-300 text-gray-700 hover:border-gray-400 px-6 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center">
                   <Share2 className="h-5 w-5 mr-2" />
