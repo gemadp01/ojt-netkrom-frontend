@@ -127,7 +127,7 @@ const Header = () => {
                                 // Regular User Menu
                                 <>
                                   <Link
-                                    to="/wishlist"
+                                    to="/user/wishlist"
                                     className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                                     onClick={() => setIsProfileOpen(false)}
                                   >
@@ -266,7 +266,7 @@ const Header = () => {
                     ) : (
                       // Regular User Menu Mobile
                       <>
-                        <Link to="/wishlist" className="block">
+                        <Link to="/user/wishlist" className="block">
                           <Button
                             variant="primary"
                             size="sm"

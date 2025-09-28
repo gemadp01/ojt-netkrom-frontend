@@ -3,6 +3,7 @@ import { Heart, Share2, ArrowLeft, CheckCircle, ZoomIn, X } from "lucide-react";
 import { Link, useParams } from "react-router";
 import { formatPrice } from "@/lib/formatPrice";
 import { Button } from "@/components/common/Button";
+import { useSelector } from "react-redux";
 
 const ProductDetailPage = () => {
   const { productId } = useParams();
@@ -23,7 +24,7 @@ const ProductDetailPage = () => {
   const [activeTab, setActiveTab] = useState("description");
   const [isWishlist, setIsWishlist] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
-  // const [status, setStatus] = useState("");
+  const userSelector = useSelector((state) => state.user);
   //   name: "Premium Wireless Headphones",
   //   brand: "AudioTech Pro",
   //   price: 1299000,
@@ -99,38 +100,63 @@ const ProductDetailPage = () => {
     }
   };
 
-  // const addToWishlist = async (e) => {
-  //   e.preventDefault();
-  //   console.log(productId);
-  //   return;
-  //   try {
-  //     const response = await fetch("http://localhost:3000/api/wishlist", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json", // penting biar server tahu ini JSON
-  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //       },
-  //       body: JSON.stringify({ productId }),
-  //     });
+  const fetchWishList = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/wishlist/" + productId,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
-  //     const result = await response.json();
-  //     console.log(result);
+      const result = await response.json();
 
-  //     if (!response.ok) {
-  //       if (result.success === false) throw new Error(result.message);
-  //       throw new Error("Failed to add to wishlist");
-  //     }
+      if (!response.ok) {
+        if (result.success === false) throw new Error(result.message);
+        throw new Error("Failed to fetch wishlist");
+      }
 
-  //     alert(result.message);
-  //   } catch (error) {
-  //     alert(error.message);
-  //   }
-  //   setIsWishlist(!isWishlist);
-  // };
+      setIsWishlist(result.isWishlisted);
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const toggleWishlist = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/wishlist/" + productId,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        if (result.success === false) throw new Error(result.message);
+        throw new Error("Failed to add to wishlist");
+      }
+
+      alert(result.message);
+      setIsWishlist(result.isWishlisted);
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
   useEffect(() => {
     fetchProduct();
-  }, []);
+    fetchWishList();
+  }, [isWishlist]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -152,7 +178,8 @@ const ProductDetailPage = () => {
                         word.slice(1).toLowerCase()
                     )
                     .join(" & ")
-                : product.category}
+                : product.category.charAt(0).toUpperCase() +
+                  product.category.slice(1).toLowerCase()}
             </span>
             <span className="text-gray-400">/</span>
             <span className="text-gray-900">{product.name}</span>
@@ -222,24 +249,24 @@ const ProductDetailPage = () => {
             {/* Action Buttons */}
             <div className="space-y-4 mb-8">
               <div className="flex space-x-4">
-                {/* <form onSubmit={addToWishlist}> */}
-                <button
-                  type="submit"
-                  onClick={() => setIsWishlist(!isWishlist)}
-                  className={`flex-1 border-2 px-6 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center ${
-                    isWishlist
-                      ? "border-red-500 text-red-500 bg-red-50"
-                      : "border-gray-300 text-gray-700 hover:border-gray-400"
-                  }`}
-                >
-                  <Heart
-                    className={`h-5 w-5 mr-2 ${
-                      isWishlist ? "fill-current" : ""
+                {userSelector.role !== "admin" && (
+                  <button
+                    type="submit"
+                    onClick={toggleWishlist}
+                    className={`flex-1 border-2 px-6 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center ${
+                      isWishlist
+                        ? "border-red-500 text-red-500 bg-red-50"
+                        : "border-gray-300 text-gray-700 hover:border-gray-400"
                     }`}
-                  />
-                  {isWishlist ? "In Wishlist" : "Add to Wishlist"}
-                </button>
-                {/* </form> */}
+                  >
+                    <Heart
+                      className={`h-5 w-5 mr-2 ${
+                        isWishlist ? "fill-current" : ""
+                      }`}
+                    />
+                    {isWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+                  </button>
+                )}
 
                 <button className="flex-1 border-2 border-gray-300 text-gray-700 hover:border-gray-400 px-6 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center">
                   <Share2 className="h-5 w-5 mr-2" />

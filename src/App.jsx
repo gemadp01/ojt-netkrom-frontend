@@ -12,12 +12,11 @@ import DashboardPage from "@/pages/admin/DashboardPage";
 import ProductManagementPage from "@/pages/admin/ProductManagementPage";
 import CreateProductPage from "@/pages/admin/CreateProductPage";
 import ProductDetailPage from "@/pages/ProductDetailPage";
-import CounterPage from "@/pages/CounterPage";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import AdminProfilePage from "@/pages/admin/AdminProfilePage";
 import EditProductPage from "@/pages/admin/EditProductPage";
-import WishlistPage from "@/pages/WishlistPage";
+import WishlistPage from "@/pages/user/WishlistPage";
 
 function App() {
   const location = useLocation();
@@ -85,8 +84,11 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/products/:productId" element={<ProductDetailPage />} />
-        <Route path="/wishlist" element={<WishlistPage />} />
-        <Route path="/counter" element={<CounterPage />} />
+
+        {/* User Route */}
+        <Route path="/user">
+          <Route path="wishlist" element={<WishlistPage />} />
+        </Route>
 
         {/* Admin Route */}
         <Route path="/admin">

@@ -69,7 +69,8 @@ export const ProductCard = ({ product, viewMode, formatPrice }) => {
                     word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
                 )
                 .join(" & ")
-            : product.category}
+            : product.category.charAt(0).toUpperCase() +
+              product.category.slice(1).toLowerCase()}
         </Badge>
         {!product.stock && (
           <div className="absolute inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
