@@ -40,6 +40,7 @@ const EditProductPage = () => {
       sku: "",
       stock: 0,
       weight: 0,
+      image: null,
     },
   });
 
@@ -124,6 +125,7 @@ const EditProductPage = () => {
   };
 
   const onSubmit = async (data) => {
+    console.log(data);
     const token = localStorage.getItem("token");
     try {
       setStatus(null);
@@ -139,11 +141,18 @@ const EditProductPage = () => {
       formData.append("sku", data.sku);
       formData.append("stock", data.stock);
       formData.append("weight", data.weight);
-      if (data.image instanceof File) {
-        formData.append("image", data.image);
+
+      // if (data.image instanceof File) {
+      if (data.image && typeof data.image !== "string") {
+        formData.append("image", data.image[0]);
       } else if (typeof data.image === "string") {
         formData.append("image", data.image);
       }
+
+      // formData.forEach((value, key) => {
+      //   console.log(key, value);
+      // });
+      // return;
 
       const response = await fetch(
         "http://localhost:3000/api/products/" + productId,
@@ -497,8 +506,13 @@ const EditProductPage = () => {
 
         {/* Form Actions */}
         <div className="flex flex-col sm:flex-row gap-4 justify-end">
-          <Link to="/admin/products">
-            <Button type="button" variant="outline" disabled={isSubmitting}>
+          <Link to="/admin/products" className="w-full md:w-auto">
+            <Button
+              type="button"
+              variant="outline"
+              width="full"
+              disabled={isSubmitting}
+            >
               Cancel
             </Button>
           </Link>
@@ -507,7 +521,7 @@ const EditProductPage = () => {
             type="submit"
             variant="primary"
             disabled={isSubmitting}
-            className="min-w-[140px]"
+            // className="min-w-[140px]"
           >
             {isSubmitting ? (
               <div className="flex items-center">
